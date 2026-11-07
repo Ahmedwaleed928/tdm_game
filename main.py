@@ -51,16 +51,16 @@ S = {
 }
 
 
-def raw(k, **kw):
-    return S[k][0 if AR else 1].format(**kw)
+def raw(key, /, **kw):
+    return S[key][0 if AR else 1].format(**kw)
 
 
 def shape(s):
     return get_display(arabic_reshaper.reshape(s)) if AR else s
 
 
-def tx(k, **kw):
-    return shape(raw(k, **kw))
+def tx(key, /, **kw):
+    return shape(raw(key, **kw))
 
 
 W, H = 2360, 1420
