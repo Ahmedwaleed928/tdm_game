@@ -14,8 +14,20 @@ jobs:
           sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
           pip install buildozer cython==0.29.36 virtualenv
       - name: Build APK
-        run: buildozer -v android debug
+        run: |
+          set -o pipefail
+          buildozer android debug 2>&1 | tee build.log
+      - name: Show errors
+        if: failure()
+        run: |
+          echo "===== ERRORS ====="
+          grep -n -i -E "error|failed|exception|not found" build.log | tail -n 25
+          echo "===== LAST 40 LINES ====="
+          tail -n 40 build.log
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: apk
-          path: bin/*.apk
+          path: |
+            bin/*.apk
+            build.log
